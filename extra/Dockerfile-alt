@@ -18,6 +18,7 @@ RUN apt-get update && \
     apt-get upgrade --yes && \
     DEBIAN_FRONTEND="noninteractive" apt-get --yes --option Dpkg::Options::="--force-confnew" --no-install-recommends install \
     curl \
+	wget \
     ffmpeg \
     libmicrohttpd12 \
     libmysqlclient21 \
@@ -27,23 +28,20 @@ RUN apt-get update && \
     motion \
     python3-jinja2 \
     python3-pil \
-    python3-pip \
     python3-pycurl \
-    python3-setuptools \
     python3-six \
     python3-tornado \
     python3-tz \
-    python3-wheel \
+	python3-distutils \
     tzdata \
     v4l-utils && \
-    pip3 install /tmp/motioneye && \
-    rm -rf /tmp/motioneye && \
-    apt-get purge --yes \
-    python3-pip \
-    python3-setuptools \
-    python3-wheel && \
     apt-get autoremove --yes && \
     apt-get --yes clean && rm -rf /var/lib/apt/lists/* && rm -f /var/cache/apt/*.bin
+
+RUN wget -qO- https://bootstrap.pypa.io/get-pip.py | python3 && \
+    pip3 -v install /tmp/motioneye && \
+    rm -rf /tmp/motioneye && \
+    pip3 install -v semantic-version sh
 
 # R/W needed for motioneye to update configurations
 VOLUME /etc/motioneye
